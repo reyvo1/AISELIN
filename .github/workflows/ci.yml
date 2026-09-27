@@ -1,0 +1,64 @@
+name: AIOC Full Simulation
+on:
+  push:
+  pull_request:
+
+jobs:
+  sqlite-core:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: pip install -r requirements.txt
+      - run: pytest -q
+      - run: AIOC_DATABASE_PATH=/tmp/aioc-migration-ci.db python scripts/migration_upgrade_smoke.py
+      - run: python -m compileall -q app sdk scripts
+      - run: python scripts/security_static_check.py
+      - run: node --check app/static/app.js
+      - run: AIOC_DATABASE_PATH=/tmp/aioc-backup-ci.db AIOC_OWNER_TOKEN=ci-owner AIOC_MASTER_KEY=ci-master python scripts/backup_snapshot.py /tmp/aioc-snapshot.json
+      - name: Live SQLite server + worker smoke
+        run: |
+          export AIOC_ENV=development AIOC_DATABASE_PATH=/tmp/aioc-ci-smoke.db AIOC_OWNER_TOKEN=ci-owner AIOC_EVENT_TOKEN=ci-event AIOC_MASTER_KEY=ci-master-key AIOC_ALLOWED_CONNECTOR_HOSTS='*' PYTHONPATH=.
+          rm -f /tmp/aioc-ci-smoke.db
+          uvicorn app.main:app --host 127.0.0.1 --port 8765 > /tmp/aioc-server.log 2>&1 & SERVER=$!
+          python -m app.worker > /tmp/aioc-worker.log 2>&1 & WORKER=$!
+          trap 'kill $SERVER $WORKER 2>/dev/null || true' EXIT
+          for i in $(seq 1 30); do curl -fsS http://127.0.0.1:8765/api/v1/health && break || sleep 1; done
+          AIOC_URL=http://127.0.0.1:8765 python scripts/live_smoke.py
+
+  postgres-core:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_DB: aioc_test
+          POSTGRES_USER: aioc
+          POSTGRES_PASSWORD: aioc-test-pass
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U aioc -d aioc_test"
+          --health-interval 5s --health-timeout 5s --health-retries 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: pip install -r requirements.txt
+      - run: AIOC_TEST_DATABASE_URL='postgresql+psycopg://aioc:aioc-test-pass@127.0.0.1:5432/aioc_test' pytest -q
+      - run: AIOC_DATABASE_URL='postgresql+psycopg://aioc:aioc-test-pass@127.0.0.1:5432/aioc_test' python scripts/migration_upgrade_smoke.py
+      - name: Live PostgreSQL server + worker smoke
+        run: |
+          export AIOC_ENV=development AIOC_DATABASE_URL='postgresql+psycopg://aioc:aioc-test-pass@127.0.0.1:5432/aioc_test' AIOC_OWNER_TOKEN=ci-owner AIOC_EVENT_TOKEN=ci-event AIOC_MASTER_KEY=ci-master-key AIOC_ALLOWED_CONNECTOR_HOSTS='*' PYTHONPATH=.
+          uvicorn app.main:app --host 127.0.0.1 --port 8766 > /tmp/aioc-pg-server.log 2>&1 & SERVER=$!
+          python -m app.worker > /tmp/aioc-pg-worker.log 2>&1 & WORKER=$!
+          trap 'kill $SERVER $WORKER 2>/dev/null || true' EXIT
+          for i in $(seq 1 30); do curl -fsS http://127.0.0.1:8766/api/v1/health && break || sleep 1; done
+          AIOC_URL=http://127.0.0.1:8766 python scripts/live_smoke.py
+
+  packaging:
+    runs-on: ubuntu-latest
+    needs: [sqlite-core, postgres-core]
+    steps:
+      - uses: actions/checkout@v4
+      - run: bash scripts/release_verify.sh
