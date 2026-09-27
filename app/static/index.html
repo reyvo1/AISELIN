@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>AIOC Control Center</title><link rel="stylesheet" href="/static/style.css"/></head>
+<body><header><div><h1>AI Autonomous Operations Center</h1><p>Global · Dynamic · Multi-organization · Policy controlled · Durable workflows</p></div>
+<div class="token-box"><input id="token" type="password" placeholder="Owner token or AIOC API key"/><button onclick="saveToken()">Connect</button></div></header>
+<main>
+<section class="summary" id="summary"></section>
+<section class="panel command-panel"><div class="row between"><h2>AI Command</h2><span id="connection" class="small">Not connected</span></div><div class="command-row"><input id="command" placeholder="e.g. cek semua aplikasi"/><button onclick="runCommand()">Run</button></div><pre id="commandOutput">Ready.</pre></section>
+<nav class="tabs"><button onclick="showTab('ops')">Operations</button><button onclick="showTab('engineering')">Engineering</button><button onclick="showTab('admin')">Administration</button><button onclick="showTab('automation')">Automation</button><button onclick="showTab('knowledge')">Knowledge</button></nav>
+<div id="tab-ops" class="tab active">
+<section class="panel"><div class="row between"><h2>Applications</h2><button onclick="refreshAll()">Refresh</button></div><div id="apps" class="cards"></div></section>
+<section class="grid-3"><section class="panel"><h2>Open Incidents</h2><div id="incidents"></div></section><section class="panel"><h2>Durable Jobs</h2><div id="jobs"></div></section><section class="panel"><h2>Digital Resources</h2><div id="resources"></div></section></section>
+<section class="grid-2"><section class="panel"><h2>Pending Approvals</h2><div id="approvals"></div></section><section class="panel"><h2>Recent Audit</h2><div id="audit"></div></section></section>
+</div>
+
+<div id="tab-engineering" class="tab">
+<section class="grid-2">
+<section class="panel"><h2>Register Agent</h2><form onsubmit="createAgentUI(event)"><input id="agentOrg" placeholder="organization" value="global"/><input id="agentId" placeholder="agent id" required/><input id="agentName" placeholder="agent name" required/><select id="agentKind"><option>local</option><option>server</option><option>edge</option></select><textarea id="agentCaps" placeholder='Capabilities JSON array, e.g. ["system.status","repo.inspect"]' required></textarea><button>Create Agent</button></form><pre id="agentTokenOutput">Agent token is shown once after registration.</pre></section>
+<section class="panel"><h2>Agents</h2><div id="agents"></div></section>
+</section>
+<section class="grid-2">
+<section class="panel"><h2>Register Project</h2><form onsubmit="createProjectUI(event)"><input id="projectOrg" placeholder="organization" value="global"/><input id="projectId" placeholder="project id" required/><input id="projectName" placeholder="project name" required/><input id="projectSourceAgent" placeholder="local/source agent id" required/><input id="projectRepoPath" placeholder="repo path on local agent" required/><input id="projectRuntime" placeholder="runtime" value="auto"/><textarea id="projectBuild" placeholder='Build argv arrays JSON, e.g. [["npm","run","build"]]'></textarea><textarea id="projectTests" placeholder='Test argv arrays JSON, e.g. [["pytest","-q"]]'></textarea><button>Register Project</button></form></section>
+<section class="panel"><h2>Projects</h2><div id="projects"></div></section>
+</section>
+<section class="grid-2">
+<section class="panel"><h2>Deployment Target</h2><form onsubmit="createTargetUI(event)"><input id="targetOrg" placeholder="organization" value="global"/><input id="targetId" placeholder="target id" required/><input id="targetProject" placeholder="project id" required/><input id="targetAgent" placeholder="server agent id" required/><select id="targetEnv"><option>production</option><option>staging</option><option>development</option></select><input id="targetRoot" placeholder="target root, e.g. /srv/apps/myapp" required/><select id="targetServiceType"><option>none</option><option>systemd</option><option>docker-compose</option></select><input id="targetServiceName" placeholder="service name (optional)"/><input id="targetHealth" placeholder="health URL (optional)"/><input id="targetHost" placeholder="public host (optional)"/><input id="targetPort" type="number" placeholder="local port (optional)"/><select id="targetPublish"><option>none</option><option>nginx</option></select><button>Create Target</button></form></section>
+<section class="panel"><h2>Deployment Targets</h2><div id="targets"></div></section>
+</section>
+<section class="grid-2">
+<section class="panel"><h2>Autonomous Developer</h2><form onsubmit="startDeveloperUI(event)"><input id="devProject" placeholder="project id" required/><textarea id="devObjective" placeholder="Describe what must be fixed or developed" required></textarea><label class="small"><input id="devCommit" type="checkbox"/> Auto-commit after tests pass</label><input id="devDeployTarget" placeholder="auto-deploy target (requires auto-commit; optional)"/><button>Start Developer Session</button></form></section>
+<section class="panel"><h2>Developer Sessions</h2><div id="developerSessions"></div></section>
+</section>
+<section class="grid-2">
+<section class="panel"><h2>Autonomous Server Troubleshooter</h2><form onsubmit="startServerSessionUI(event)"><input id="serverSessionAgent" placeholder="server agent id" required/><textarea id="serverSessionObjective" placeholder="e.g. server lambat, cari masalah dan bereskan" required></textarea><input id="serverSessionIterations" type="number" min="1" max="30" value="8"/><button>Start Server Session</button></form></section>
+<section class="panel"><h2>Server Sessions</h2><div id="serverSessions"></div></section>
+</section>
+<section class="grid-2"><section class="panel"><h2>Deployments</h2><div id="deployments"></div></section><section class="panel"><h2>Agent Tasks</h2><div id="agentTasks"></div></section></section><section class="panel"><h2>Infrastructure Approvals</h2><div id="infraApprovals"></div></section>
+</div>
+<div id="tab-admin" class="tab">
+<section class="grid-2"><section class="panel"><h2>Register Organization</h2><form onsubmit="createOrganization(event)"><input id="orgId" placeholder="id" required/><input id="orgName" placeholder="name" required/><input id="orgSlug" placeholder="slug" required/><button>Create</button></form><div id="organizations"></div></section>
+<section class="panel"><h2>Register Application</h2><form onsubmit="createApplication(event)"><input id="appId" placeholder="app id" required/><input id="appName" placeholder="name" required/><input id="appOrg" placeholder="organization id" value="global" required/><select id="appConnector"><option>simulator</option><option>rest</option><option>graphql</option></select><input id="appUrl" placeholder="base URL (REST/GraphQL)"/><textarea id="appCaps" placeholder='Capabilities JSON, e.g. [{"name":"status.read","default_policy":"read"}]' required></textarea><button>Register</button></form></section></section>
+<section class="grid-2"><section class="panel"><h2>Notification Channel</h2><form onsubmit="createChannel(event)"><input id="channelOrg" placeholder="organization" value="global"/><input id="channelName" placeholder="name"/><select id="channelType"><option>log</option><option>webhook</option><option>telegram</option><option>slack</option><option>email</option><option>whatsapp</option></select><textarea id="channelConfig" placeholder='Config JSON'></textarea><input id="channelSecret" placeholder="secret name (optional)"/><button>Create</button></form><div id="channels"></div></section>
+<section class="panel"><h2>Policies</h2><div id="policies"></div></section></section>
+</div>
+<div id="tab-automation" class="tab">
+<section class="grid-2"><section class="panel"><h2>Create Rule</h2><form onsubmit="createRuleUI(event)"><input id="ruleName" placeholder="rule name"/><select id="ruleTriggerType"><option>event</option><option>schedule</option></select><textarea id="ruleTrigger" placeholder='Trigger JSON'></textarea><textarea id="ruleCondition" placeholder='Condition JSON'></textarea><textarea id="ruleAction" placeholder='Action JSON'></textarea><button>Create Rule</button></form></section>
+<section class="panel"><h2>Create Workflow</h2><form onsubmit="createWorkflowUI(event)"><input id="workflowOrg" placeholder="organization" value="global"/><input id="workflowName" placeholder="workflow name"/><textarea id="workflowSteps" placeholder='Steps JSON array'></textarea><button>Create Workflow</button></form></section></section>
+<section class="grid-2"><section class="panel"><h2>Rules</h2><div id="rules"></div></section><section class="panel"><h2>Workflow Runs</h2><div id="workflowRuns"></div></section></section>
+</div>
+<div id="tab-knowledge" class="tab"><section class="grid-2"><section class="panel"><h2>Operational Memory</h2><form onsubmit="saveMemoryUI(event)"><input id="memoryOrg" placeholder="organization" value="global"/><input id="memoryApp" placeholder="application (optional)"/><input id="memoryNamespace" placeholder="namespace" value="runbook"/><input id="memoryKey" placeholder="key"/><textarea id="memoryValue" placeholder='Value JSON'></textarea><button>Save Memory</button></form></section><section class="panel"><h2>Memory Entries</h2><div id="memory"></div></section></section></div>
+</main><script src="/static/app.js"></script></body></html>

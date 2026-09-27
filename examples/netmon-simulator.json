@@ -1,0 +1,14 @@
+{
+  "id": "netmon-demo",
+  "name": "Network Operations Simulator",
+  "type": "network-management",
+  "environment": "production",
+  "connector": {"type": "simulator"},
+  "capabilities": [
+    {"name": "router.status", "description": "Read router status", "default_policy": "read"},
+    {"name": "router.reconnect", "description": "Reconnect router", "default_policy": "auto"},
+    {"name": "voucher.create", "description": "Create hotspot vouchers", "default_policy": "controlled"},
+    {"name": "router.factory_reset", "description": "Factory reset router", "default_policy": "forbidden"}
+  ],
+  "metadata": {"vendor": "MikroTik-compatible"}
+}

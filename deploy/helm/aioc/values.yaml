@@ -1,0 +1,34 @@
+replicaCount: 2
+image:
+  repository: aioc
+  tag: 0.8.0-alpha.1
+  pullPolicy: IfNotPresent
+service:
+  type: ClusterIP
+  port: 8000
+worker:
+  replicaCount: 2
+env:
+  AIOC_ENV: production
+  AIOC_ALLOWED_CONNECTOR_HOSTS: "api.example.com"
+  AIOC_RATE_LIMIT_PER_MINUTE: "600"
+  AIOC_WORKER_POLL_SECONDS: "5"
+  AIOC_WORKER_HEARTBEAT_SECONDS: "15"
+secret:
+  existingSecret: aioc-secrets
+resources: {}
+ingress:
+  enabled: false
+  className: nginx
+  host: aioc.example.com
+  tlsSecret: ""
+hpa:
+  enabled: false
+  minReplicas: 2
+  maxReplicas: 6
+  targetCPUUtilizationPercentage: 70
+networkPolicy:
+  enabled: true
+podDisruptionBudget:
+  enabled: true
+  minAvailable: 1

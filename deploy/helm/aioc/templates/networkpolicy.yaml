@@ -1,0 +1,14 @@
+{{- if .Values.networkPolicy.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata: {name: {{ .Release.Name }}-aioc-default}
+spec:
+  podSelector: {matchLabels: {app.kubernetes.io/name: aioc}}
+  policyTypes: [Ingress, Egress]
+  ingress:
+    - from:
+        - namespaceSelector: {}
+      ports: [{protocol: TCP, port: 8000}]
+  egress:
+    - {}
+{{- end }}

@@ -1,0 +1,15 @@
+{
+  "id": "hotel-demo",
+  "name": "Hotel Production Simulator",
+  "type": "hotel-management",
+  "environment": "production",
+  "connector": {"type": "simulator"},
+  "capabilities": [
+    {"name": "hotel.status", "description": "Read hotel status", "default_policy": "read"},
+    {"name": "report.revenue", "description": "Generate revenue report", "default_policy": "read"},
+    {"name": "shift.close", "description": "Close an eligible stale shift", "default_policy": "controlled"},
+    {"name": "transaction.refund", "description": "Refund a payment", "default_policy": "approval"},
+    {"name": "ledger.delete", "description": "Destructive ledger operation", "default_policy": "forbidden"}
+  ],
+  "metadata": {"timezone": "Asia/Makassar", "currency": "IDR"}
+}

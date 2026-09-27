@@ -1,0 +1,17 @@
+{
+  "name": "AI Autonomous Operations Center",
+  "version": "0.9.0-alpha.1",
+  "release": "M5-SERVER-AUTONOMY-SAFETY-2026-09-28",
+  "status": "HARDENED SERVER/ENGINEERING AUTONOMY CHECKPOINT / CODING FEATURE SET NEAR FREEZE / NOT FINAL / FINAL GITHUB UAT DEFERRED",
+  "schema_version": 13,
+  "automated_tests": "134/134 PASS",
+  "local_migration_upgrade": "PASS SQLite legacy-v4 -> v13",
+  "live_e2e_simulation": "PASS SQLite Uvicorn + separate worker + central engineering/server flow",
+  "local_edge_agent_proof": "PASS temp Git repo repair + tests + commit + deploy safety + package/release guards",
+  "deployment_rollback_proof": "PASS health failure -> previous active release",
+  "server_safety_proof": "PASS infrastructure approval + capability allowlist + package opt-in/allowlist + no arbitrary shell",
+  "postgresql_m5_proof": "PENDING FINAL GITHUB UAT",
+  "real_ubuntu_infrastructure_proof": "PENDING OWNER INFRA UAT",
+  "production_signoff": "NOT YET",
+  "source_files": 147
+}

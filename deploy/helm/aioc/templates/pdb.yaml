@@ -1,0 +1,15 @@
+{{- if .Values.podDisruptionBudget.enabled }}
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata: {name: {{ .Release.Name }}-aioc-api}
+spec:
+  minAvailable: {{ .Values.podDisruptionBudget.minAvailable }}
+  selector: {matchLabels: {app.kubernetes.io/name: aioc, app.kubernetes.io/component: api}}
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata: {name: {{ .Release.Name }}-aioc-worker}
+spec:
+  minAvailable: {{ .Values.podDisruptionBudget.minAvailable }}
+  selector: {matchLabels: {app.kubernetes.io/name: aioc, app.kubernetes.io/component: worker}}
+{{- end }}

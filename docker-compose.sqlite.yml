@@ -1,0 +1,16 @@
+services:
+  aioc:
+    build: .
+    restart: unless-stopped
+    env_file: .env
+    ports: ["8000:8000"]
+    volumes: ["aioc_data:/app/data"]
+  worker:
+    build: .
+    restart: unless-stopped
+    env_file: .env
+    command: ["python","-m","app.worker"]
+    volumes: ["aioc_data:/app/data"]
+    depends_on: [aioc]
+volumes:
+  aioc_data:

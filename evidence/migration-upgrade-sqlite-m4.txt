@@ -1,0 +1,1 @@
+migration-upgrade-smoke: PASS backend=sqlite schema=12

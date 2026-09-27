@@ -1,0 +1,13 @@
+{
+  "name": "Reconnect router after offline event",
+  "trigger_type": "event",
+  "trigger": {"event_type": "router.offline", "source_app_id": "netmon-demo"},
+  "condition": {"offline_minutes": {"gte": 5}},
+  "action": {
+    "app_id": "netmon-demo",
+    "capability": "router.reconnect",
+    "parameters": {"router_id": "${event.router_id}"}
+  },
+  "cooldown_seconds": 300,
+  "enabled": true
+}

@@ -1,0 +1,24 @@
+[Unit]
+Description=AIOC Edge Agent
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=__AIOC_AGENT_USER__
+Group=__AIOC_AGENT_GROUP__
+WorkingDirectory=__AIOC_AGENT_INSTALL_DIR__
+EnvironmentFile=__AIOC_AGENT_ENV_FILE__
+ExecStart=__AIOC_AGENT_INSTALL_DIR__/venv/bin/python __AIOC_AGENT_INSTALL_DIR__/runner.py
+Restart=always
+RestartSec=3
+TimeoutStopSec=30
+PrivateTmp=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+LockPersonality=true
+
+[Install]
+WantedBy=multi-user.target

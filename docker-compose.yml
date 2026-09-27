@@ -1,0 +1,43 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: aioc
+      POSTGRES_USER: aioc
+      POSTGRES_PASSWORD: ${AIOC_POSTGRES_PASSWORD:-change-me-now}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U aioc -d aioc"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  aioc:
+    build: .
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      AIOC_DATABASE_URL: postgresql+psycopg://aioc:${AIOC_POSTGRES_PASSWORD:-change-me-now}@postgres:5432/aioc
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  worker:
+    build: .
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      AIOC_DATABASE_URL: postgresql+psycopg://aioc:${AIOC_POSTGRES_PASSWORD:-change-me-now}@postgres:5432/aioc
+    command: ["python","-m","app.worker"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+      aioc:
+        condition: service_started
+
+volumes:
+  postgres_data:
