@@ -9,7 +9,16 @@ def _now(): return datetime.now(timezone.utc).isoformat()
 def upsert_memory(item: MemoryCreate) -> dict:
     now=_now()
     with connect() as conn:
-        row=conn.execute("SELECT id FROM operational_memory WHERE organization_id=? AND app_id IS ? AND namespace=? AND memory_key=?",(item.organization_id,item.app_id,item.namespace,item.key)).fetchone()
+        if item.app_id is None:
+            row=conn.execute(
+                "SELECT id FROM operational_memory WHERE organization_id=? AND app_id IS NULL AND namespace=? AND memory_key=?",
+                (item.organization_id,item.namespace,item.key),
+            ).fetchone()
+        else:
+            row=conn.execute(
+                "SELECT id FROM operational_memory WHERE organization_id=? AND app_id=? AND namespace=? AND memory_key=?",
+                (item.organization_id,item.app_id,item.namespace,item.key),
+            ).fetchone()
         mid=row["id"] if row else str(uuid4())
         if row:
             conn.execute("UPDATE operational_memory SET value_json=?,tags_json=?,updated_at=? WHERE id=?",(dumps(item.value),dumps(item.tags),now,mid))

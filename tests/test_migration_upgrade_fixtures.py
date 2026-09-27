@@ -38,7 +38,13 @@ with connect() as c:
     assert {'cancel_requested','workflow_version','workflow_definition_json'} <= run_cols
 print('upgrade-pass')
 '''
-    env=os.environ.copy();env.update({'AIOC_DATABASE_PATH':str(db),'AIOC_OWNER_TOKEN':'x','AIOC_MASTER_KEY':'y','AIOC_ENV':'development'})
+    env=os.environ.copy()
+    # This fixture intentionally validates an on-disk SQLite v4 database.  The
+    # PostgreSQL matrix exports AIOC_TEST_DATABASE_URL/AIOC_DATABASE_URL in the
+    # parent process, so remove them before spawning the SQLite verifier.
+    env.pop('AIOC_TEST_DATABASE_URL',None)
+    env.pop('AIOC_DATABASE_URL',None)
+    env.update({'AIOC_DATABASE_PATH':str(db),'AIOC_OWNER_TOKEN':'x','AIOC_MASTER_KEY':'y','AIOC_ENV':'development'})
     result=subprocess.run([sys.executable,'-c',verify],cwd=Path(__file__).resolve().parents[1],env=env,capture_output=True,text=True)
     assert result.returncode==0,result.stderr+result.stdout
     assert 'upgrade-pass' in result.stdout

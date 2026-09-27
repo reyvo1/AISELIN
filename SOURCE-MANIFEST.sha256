@@ -55,7 +55,7 @@ a7ea77adee571b22245c9d6736aff8f12ef701d8cea553c261c34d372e3374a0  ./app/services
 d4ead70b207437cea2d1288972a93e4ff82684df4b351a9ca6c4b9bd6924e57c  ./app/services/knowledge.py
 ff2309d24446479ab4ee8ce59543347f10487e9768f96b37f1f5b3211c202827  ./app/services/lifecycle.py
 9bd7301963fe75604e36614135d024adb174555b0bb4538586d1516a3e4f5024  ./app/services/locks.py
-1c6a81482f40cd0c90d686804018452fac8f60637acc968f821ae4e5e45bb7a6  ./app/services/memory.py
+d6149273c6b0062b4fb82960a4dc0a3a1ffadd55cf056fdf90bcd23e170b7da6  ./app/services/memory.py
 f68b6cc9e21f772d87a9efa5d71403cb23a8bc3eff9bbc9a2734a1d026848c46  ./app/services/notifications.py
 0e9f1d4f94aceeb3a4143e9a2190845cb147f458b65cce6fb80beac50f56d7e8  ./app/services/operations.py
 530b8e88b19a590706351dae3330da8e52cd1dfe5665e3f0c80dbe604e0ee8a2  ./app/services/operator.py
@@ -78,6 +78,11 @@ f5224f62c74ecf20a5df0e20c068cead0682abfe2be58842d0febdc33ec922bc  ./app/services
 16ba4b026490ebada4d27e4102c309bbad7abccc7ac44efe2d6097b8c1c3d3df  ./app/static/index.html
 91ed521ff81cff42ce2b954c2d9666f1fbbe7271e7ab85342ec2e22fa2ecfd74  ./app/static/style.css
 ca88dfcbcd229654a47d2d8c26e211788f3d0e6773ca7596c750228dc094792c  ./app/worker.py
+8f2ebabafdd033675d2bc6aca26882b3153ff47416df4d7682b0798741b5ebe2  ./data/artifacts/org-edge/62148ddc-e5a4-4c95-92a8-85f9414297c0-release.tar.gz
+a7240e889d036c5a4a5538438f3863fc18085e08ff537f7b89b2295937457d8a  ./data/artifacts/org-edge/6daef16b-05ac-48c4-91eb-cb8bf80f850d-app.tar.gz
+ba95a219ec67e562286366ab1afb36f022737fc37122877584dfc1907646c657  ./data/artifacts/org-edge/7b8a3caf-1999-494e-afed-7f6d55c069da-release.tar.gz
+50d08c3e20aa3dabbaa5076abf2a096c129f70be88258be20e70c673a4a894b9  ./data/artifacts/org-edge/e1ab4070-2ecc-42a6-8785-dbd08ea374b0-release.tar.gz
+0eb3e36bfb24dcd9bb1d1bece1531216b59539a8fde17ee80224af0653c92aa3  ./data/artifacts/org-secret/872fa98e-724a-4f73-946c-441bb089fbf6-release.tar.gz
 2a0b813f950aaefcac2b4b20ac8c6f3209fb2d2bb78f936df3d1ba908881d2f7  ./deploy/helm/aioc/Chart.yaml
 4ab09fef6f2ad97a9d3ba35119639a6c40abc243a8fafafba20b4bf5c289a28a  ./deploy/helm/aioc/README.md
 55830f0c82ee24a1db4812c9b02b51c4521d1a0ceb8995770d37acc1dd8f904a  ./deploy/helm/aioc/templates/api-deployment.yaml
@@ -112,7 +117,7 @@ e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855  ./evidence/liv
 c6359de63ad10e72974f52e013707196e9a3dbf3d85cf484d44c4ae5f4a5de68  ./examples/reference_connector.py
 835d03e7638378df286b5ec9238ff4b6860bf9890d678791bb52684ea4686df6  ./examples/router-offline-rule.json
 d11cbf3831d8e9a6117ed7425f0dd1bdd59653b80249f5f7b2dad1cd8c6d316b  ./pyproject.toml
-acbdc71c434ed1fd8830e9dc9f3fe91a6443e892399c98a9e5676a8de214916c  ./requirements.txt
+83cc82640565236d358be2c8e2084d757cc12017088817328ae930cd76a3f8f3  ./requirements.txt
 50697e90c20b2bff3d52a3b1e44b47e75eb60bb0c540d54a9d668cb430379a34  ./scripts/agent_preflight.py
 1c47b69290615c1704940bb3c233af9d88d4c122e1862b89fdc9358fd231c791  ./scripts/backup_snapshot.py
 e3a8669e2aefac1f9a0e242750f4545e1545029f798d338ca8d0a9bb6dfa6612  ./scripts/bootstrap_demo.py
@@ -140,7 +145,7 @@ b91dd55afb8414eaaf0a1cb075d8304c0659f09656cb795b8486d07443fed420  ./tests/test_k
 6711f581647a3f7dd8211870ff7aedba6cb51a166b95539c491345bc75aa84c8  ./tests/test_load_fault_security.py
 5334e7652dbedfec1b7e366e027af7a1b057708d80a6a4d3b37cf9e9cf516f6e  ./tests/test_m5_server_autonomy.py
 5aca86d0560c2eba914ad47761d3b2511eb6797602a7febf052126d78d4ad376  ./tests/test_macro_hardening_v5.py
-e6e76aeaf8feaf2abab6007b5010b5937c70313e2dc41879532cc9074e7b1eeb  ./tests/test_migration_upgrade_fixtures.py
+afa54a336085e1f6a04188c215a244088c92f4f9c59de84b496352b6a2a3e615  ./tests/test_migration_upgrade_fixtures.py
 89308e475fdd8e7e47d8faf13c43817d355983d683fa5d3269aeb3f47edb6dd4  ./tests/test_platform_hardening.py
 8381430b78529028b01808f04380a06b5525adc6073c1f74f5c4abc7d666d06f  ./tests/test_rules.py
 00e5fe092844f91f25b30a66e9d445b9949a75c06d8921e845984494d9f58707  ./tests/test_security_migrations_ops.py
